@@ -6,10 +6,14 @@
 makeCacheMatrix <- function(x = matrix()) {
   # inverse_m is the variable that store inverse cmatrix we can cache later.
   inverse_m <- NULL
-  get_inverse <- function() inverse_m
   get <- function() x
+  get_inverse <- function() inverse_m
+  set <- function(new_matrix = matrix()){
+    x <<- new_matrix
+    inverse_m <<- NULL
+  }
   set_inverse_matrix <- function(inverse) inverse_m <<- inverse
-  #list(get_inverse = get_inverse, get = get, set_inverse_matrix = set_inverse_matrix)
+  list(set = set, get_inverse = get_inverse, get = get, set_inverse_matrix = set_inverse_matrix)
 }
 
 
@@ -23,7 +27,12 @@ cacheSolve <- function(x, ...) {
       return(m)
     }
     matrix <- x$get()
-    m <- solve(data)
+    m <- solve(matrix)
     x$set_inverse_matrix(m)
     m
 }
+cm <- matrix(c(4,2,7,6),2,2)
+cm2 <- makeCacheMatrix(cm)
+cacheSolve(cm2)
+cm2$set(matrix(c(3,3.2,3.5,3.6),2,2))
+cacheSolve(cm2)
